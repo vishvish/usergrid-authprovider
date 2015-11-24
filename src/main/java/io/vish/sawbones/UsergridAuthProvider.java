@@ -4,28 +4,42 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.jivesoftware.openfire.auth.AuthProvider;
 import org.jivesoftware.openfire.auth.ConnectionException;
 import org.jivesoftware.openfire.auth.InternalUnauthenticatedException;
 import org.jivesoftware.openfire.auth.UnauthorizedException;
 import org.jivesoftware.openfire.user.UserNotFoundException;
+import org.jivesoftware.util.JiveProperties;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Created by vish on 24/11/2015.
  */
 public class UsergridAuthProvider implements AuthProvider {
 
-    private Config conf = ConfigFactory.load();
+    private UsergridAuthProviderConfig config;
+
+    public UsergridAuthProvider() {
+        JiveProperties jiveProperties = JiveProperties.getInstance();
+        config = new UsergridAuthProviderConfig(jiveProperties);
+    }
+
 
     public void authenticate(String username, String password) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
-        String host = conf.getConfig("usergrid").getString("host");
-        String endpoint = conf.getConfig("usergrid").getString("endpoint");
-        String url = host.concat(endpoint);
+        String host = config.getUsergridBaseUrl();
+        String org = config.getUsergridOrganization();
+        String app = config.getUsergridApplication();
+        String resource = config.getUsergridResource();
+
+        Path endpoint = Paths.get(org, app, resource);
 
         try {
-            HttpResponse<JsonNode> jsonResponse = Unirest.get(url)
+            URL url = new URL("http", host, endpoint.toString());
+            HttpResponse<JsonNode> jsonResponse = Unirest.get(url.toString())
                     .header("accept", "application/json")
                     .queryString("grant_type", "password")
                     .queryString("username", username)
@@ -42,7 +56,7 @@ public class UsergridAuthProvider implements AuthProvider {
                     System.out.println(jsonResponse.getBody().toString());
                     throw new UnauthorizedException(jsonResponse.getBody().toString());
             }
-        } catch (UnirestException e) {
+        } catch (UnirestException | MalformedURLException e) {
             e.printStackTrace();
         }
     }
