@@ -8,7 +8,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        UsergridAuthProviderTest.class
+        UsergridAuthProviderTest.class,
+        UsergridUserProviderTest.class
 })
 public class AllTests {
 }
