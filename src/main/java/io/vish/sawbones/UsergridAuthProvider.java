@@ -48,9 +48,11 @@ public class UsergridAuthProvider implements AuthProvider {
             int status = jsonResponse.getStatus();
             switch (status) {
                 case 200:
+                    System.out.print(url + " ");
                     System.out.println("Authentication succeeded.");
                     break;
                 default:
+                    System.out.print(url + " ");
                     System.out.print("Authentication failed. ");
                     System.out.println(jsonResponse.getBody().toString());
                     throw new UnauthorizedException(jsonResponse.getBody().toString());

@@ -25,7 +25,7 @@ public class UsergridAuthProviderConfig {
     private Map<String, String> configProperties;
 
     /**
-     * Constructs instances of <code>CASAuthProviderConfig</code> with the map
+     * Constructs instances of <code>UsergridAuthProviderConfig</code> with the map
      * of configuration properties used to configure the instance.
      *
      * @param configProperties The configuration properties for the instance.
@@ -43,6 +43,7 @@ public class UsergridAuthProviderConfig {
         if (value.isPresent()) {
             return value.get();
         } else {
+            // FIXME: needs a trailing slash configured
             return "usergrid-1.tfto.net/";
         }
     }
