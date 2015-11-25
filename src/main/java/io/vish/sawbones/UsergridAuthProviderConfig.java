@@ -17,7 +17,9 @@ public class UsergridAuthProviderConfig {
 
     private static final String USERGRID_APPLICATION = "usergrid.application";
 
-    private static final String USERGRID_RESOURCE = "usergrid.resource";
+    private static final String USERGRID_CLIENT_ID = "usergrid.credentials.id";
+
+    private static final String USERGRID_CLIENT_SECRET = "usergrid.credentials.secret";
 
     /**
      * Map of configuration properties.
@@ -66,12 +68,21 @@ public class UsergridAuthProviderConfig {
         }
     }
 
-    public String getUsergridResource() {
-        Optional<String> value = Optional.ofNullable(configProperties.get(USERGRID_RESOURCE));
+    public String getUsergridClientId() {
+        Optional<String> value = Optional.ofNullable(configProperties.get(USERGRID_CLIENT_ID));
         if (value.isPresent()) {
             return value.get();
         } else {
-            return "token";
+            return "b3U6NlBMqmD-EeWZ_Glhm0KmBg";
+        }
+    }
+
+    public String getUsergridClientSecret() {
+        Optional<String> value = Optional.ofNullable(configProperties.get(USERGRID_CLIENT_SECRET));
+        if (value.isPresent()) {
+            return value.get();
+        } else {
+            return "b3U6w0O0U0Mzlvx5PK4yvOfzvLiyjC0";
         }
     }
 }
