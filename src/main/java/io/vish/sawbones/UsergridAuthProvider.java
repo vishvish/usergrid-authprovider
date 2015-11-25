@@ -28,7 +28,6 @@ public class UsergridAuthProvider implements AuthProvider {
         config = new UsergridAuthProviderConfig(jiveProperties);
     }
 
-
     public void authenticate(String username, String password) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
         String host = config.getUsergridBaseUrl();
         String org = config.getUsergridOrganization();
@@ -52,7 +51,7 @@ public class UsergridAuthProvider implements AuthProvider {
                     System.out.println("Authentication succeeded.");
                     break;
                 default:
-                    System.out.println("Authentication failed.");
+                    System.out.print("Authentication failed. ");
                     System.out.println(jsonResponse.getBody().toString());
                     throw new UnauthorizedException(jsonResponse.getBody().toString());
             }
