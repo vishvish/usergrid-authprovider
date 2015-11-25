@@ -4,21 +4,23 @@ import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-import org.jivesoftware.openfire.user.User;
-import org.jivesoftware.openfire.user.UserAlreadyExistsException;
-import org.jivesoftware.openfire.user.UserNotFoundException;
-import org.jivesoftware.openfire.user.UserProvider;
+import org.jivesoftware.openfire.user.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.Set;
 
 /**
  * Created by vish on 25/11/2015.
  */
 public class UsergridUserProvider extends UsergridBase implements UserProvider {
+
+    private static final Date NOTIME = new Date(0);
 
     public UsergridUserProvider() {
         super("users");
@@ -26,6 +28,7 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
     @Override
     public User loadUser(String username) throws UserNotFoundException {
+        // TODO: sanitize username for nastiness
         try {
             URL url = new URL("http", this.host, getEndpoint() + "/" + username);
             HttpResponse<JsonNode> jsonResponse = Unirest.get(url.toString())
@@ -36,12 +39,9 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
             int status = jsonResponse.getStatus();
             switch (status) {
-                case 401: // resource not found
-                    System.out.print(url + " ");
-                    System.out.println(jsonResponse.getBody().toString());
-                    throw new UserNotFoundException(jsonResponse.getBody().toString());
                 case 200:
                     System.out.print(url + " ");
+                    System.out.println(jsonResponse.getBody().toString());
                     // make new JSON Object from the response
                     JSONArray entities = (JSONArray) jsonResponse.getBody().getObject().get("entities");
                     JSONObject user = (JSONObject) entities.get(0);
@@ -103,6 +103,7 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                 case 401: // resource not found
                     System.out.print(url + " ");
                     System.out.println(jsonResponse.getBody().toString());
+                    break;
                 case 200:
                     System.out.print(url + " ");
 
@@ -113,9 +114,11 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                         String username = (String) user.get("username");
                         usernames.add(username);
                     }
+                    break;
                 default:
                     System.out.print(url + " ");
                     System.out.println(jsonResponse.getBody().toString());
+                    break;
             }
         } catch (UnirestException | MalformedURLException e) {
             e.printStackTrace();
