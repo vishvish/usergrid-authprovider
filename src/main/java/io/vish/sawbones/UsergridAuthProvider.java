@@ -9,35 +9,23 @@ import org.jivesoftware.openfire.auth.ConnectionException;
 import org.jivesoftware.openfire.auth.InternalUnauthenticatedException;
 import org.jivesoftware.openfire.auth.UnauthorizedException;
 import org.jivesoftware.openfire.user.UserNotFoundException;
-import org.jivesoftware.util.JiveProperties;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * Created by vish on 24/11/2015.
  */
-public class UsergridAuthProvider implements AuthProvider {
-
-    private UsergridAuthProviderConfig config;
+public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
 
     public UsergridAuthProvider() {
-        JiveProperties jiveProperties = JiveProperties.getInstance();
-        config = new UsergridAuthProviderConfig(jiveProperties);
+        super("token");
     }
 
     public void authenticate(String username, String password) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
-        String host = config.getUsergridBaseUrl();
-        String org = config.getUsergridOrganization();
-        String app = config.getUsergridApplication();
-        String resource = config.getUsergridResource();
-
-        Path endpoint = Paths.get(org, app, resource);
 
         try {
-            URL url = new URL("http", host, endpoint.toString());
+            URL url = new URL("http", this.host, getEndpoint());
             HttpResponse<JsonNode> jsonResponse = Unirest.get(url.toString())
                     .header("accept", "application/json")
                     .queryString("grant_type", "password")
