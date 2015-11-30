@@ -8,12 +8,12 @@ import java.nio.file.Paths;
  * Created by vish on 25/11/2015.
  */
 public class UsergridBase {
-    protected UsergridAuthProviderConfig config;
+    protected final UsergridAuthProviderConfig config;
 
-    protected String host;
-    protected String org;
-    protected String app;
-    protected String resource;
+    protected final String host;
+    protected final String org;
+    protected final String app;
+    protected final String resource;
 
 
     public UsergridBase(String resource) {

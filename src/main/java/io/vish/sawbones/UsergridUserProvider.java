@@ -19,9 +19,7 @@ import java.util.Set;
  * Created by vish on 25/11/2015.
  */
 public class UsergridUserProvider extends UsergridBase implements UserProvider {
-
-    private static final Date NOTIME = new Date(0);
-
+    
     public UsergridUserProvider() {
         super("users");
     }
