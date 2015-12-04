@@ -8,6 +8,8 @@ import org.jivesoftware.openfire.auth.AuthProvider;
 import org.jivesoftware.openfire.auth.ConnectionException;
 import org.jivesoftware.openfire.auth.InternalUnauthenticatedException;
 import org.jivesoftware.openfire.auth.UnauthorizedException;
+import org.jivesoftware.openfire.user.User;
+import org.jivesoftware.openfire.user.UserManager;
 import org.jivesoftware.openfire.user.UserNotFoundException;
 
 import java.net.MalformedURLException;
@@ -59,7 +61,12 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
     }
 
     public void setPassword(String username, String password) throws UserNotFoundException, UnsupportedOperationException {
+        System.out.print("setPassword");
+        System.out.print(username + " / " + password);
+
         throw new UnsupportedOperationException();
+//        User u = UserManager.getInstance().getUser(username);
+//        u.setPassword(password);
     }
 
     public boolean supportsPasswordRetrieval() {
