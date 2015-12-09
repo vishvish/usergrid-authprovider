@@ -1,7 +1,5 @@
 package io.vish.sawbones;
 
-import org.jivesoftware.util.JiveProperties;
-
 import java.nio.file.Paths;
 
 /**
@@ -17,8 +15,7 @@ public class UsergridBase {
 
 
     public UsergridBase(String resource) {
-        JiveProperties jiveProperties = JiveProperties.getInstance();
-        this.config = new UsergridAuthProviderConfig(jiveProperties);
+        this.config = new UsergridAuthProviderConfig();
         this.host = config.getUsergridBaseUrl();
         this.org = config.getUsergridOrganization();
         this.app = config.getUsergridApplication();

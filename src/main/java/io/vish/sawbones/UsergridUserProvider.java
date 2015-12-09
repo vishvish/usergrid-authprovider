@@ -7,6 +7,8 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import org.jivesoftware.openfire.user.*;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,7 +21,8 @@ import java.util.Set;
  * Created by vish on 25/11/2015.
  */
 public class UsergridUserProvider extends UsergridBase implements UserProvider {
-    
+    private static final Logger LOG = LoggerFactory.getLogger(UsergridUserProvider.class);
+
     public UsergridUserProvider() {
         super("users");
     }
@@ -36,36 +39,38 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                     .asJson();
 
             int status = jsonResponse.getStatus();
-            switch (status) {
-                case 200:
-                    System.out.print(url + " ");
-                    System.out.println(jsonResponse.getBody().toString());
-                    // make new JSON Object from the response
-                    JSONArray entities = (JSONArray) jsonResponse.getBody().getObject().get("entities");
-                    JSONObject user = (JSONObject) entities.get(0);
+            if (status == 200) {
+                LOG.debug(url + " ");
+                LOG.debug(jsonResponse.getBody().toString());
+                // make new JSON Object from the response
+                JSONArray entities = (JSONArray) jsonResponse.getBody().getObject().get("entities");
+                JSONObject user = (JSONObject) entities.get(0);
 
-                    String name = (String) user.get("uuid");
-                    String email = (String) user.get("email");
-                    Long created = (Long) user.get("created");
-                    Long modified = (Long) user.get("modified");
+                String name = (String) user.get("uuid");
+                String email = (String) user.get("email");
+                Long created = (Long) user.get("created");
+                Long modified = (Long) user.get("modified");
 
-                    Date cdate = new Date(created);
-                    Date mdate = new Date(modified);
+                Date cdate = new Date(created);
+                Date mdate = new Date(modified);
 
-                    return new User(username, name, email, cdate, mdate);
-                default:
-                    System.out.print(url + " ");
-                    System.out.println(jsonResponse.getBody().toString());
-                    throw new UserNotFoundException(jsonResponse.getBody().toString());
+                LOG.info(cdate.toString());
+                LOG.info(mdate.toString());
+
+                return UserManager.getInstance().createUser(username, username, name, email);
+            } else {
+                LOG.debug(url + " ");
+                LOG.debug(jsonResponse.getBody().toString());
+                throw new UserNotFoundException(jsonResponse.getBody().toString());
             }
-        } catch (UnirestException | MalformedURLException e) {
-            e.printStackTrace();
+        } catch (UnirestException | MalformedURLException | UserAlreadyExistsException e) {
+            LOG.error(e.getMessage(), e);
         }
         throw new UserNotFoundException();
     }
 
     @Override
-    public User createUser(String s, String s1, String s2, String s3) throws UserAlreadyExistsException {
+    public User createUser(String username, String password, String name, String email) throws UserAlreadyExistsException {
         throw new UnsupportedOperationException();
     }
 
@@ -81,12 +86,12 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
     @Override
     public Collection<User> getUsers() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
     public Collection<String> getUsernames() {
-        ArrayList<String> usernames = new ArrayList<String>();
+        ArrayList<String> usernames = new ArrayList<>();
 
         try {
             URL url = new URL("http", this.host, getEndpoint());
@@ -97,36 +102,34 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                     .asJson();
 
             int status = jsonResponse.getStatus();
+            LOG.debug(url + " ");
+            LOG.debug(jsonResponse.getBody().toString());
             switch (status) {
                 case 401: // resource not found
-                    System.out.print(url + " ");
-                    System.out.println(jsonResponse.getBody().toString());
                     break;
                 case 200:
-                    System.out.print(url + " ");
-
                     JSONArray entities = (JSONArray) jsonResponse.getBody().getObject().get("entities");
-
                     for (int i = 0; i < entities.length(); i++) {
-                        JSONObject user = entities.getJSONObject(i);
-                        String username = (String) user.get("username");
-                        usernames.add(username);
+                        usernames.add(getUsername(entities, i));
                     }
                     break;
                 default:
-                    System.out.print(url + " ");
-                    System.out.println(jsonResponse.getBody().toString());
                     break;
             }
         } catch (UnirestException | MalformedURLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
         return usernames;
     }
 
+    private String getUsername(JSONArray entities, int i) {
+        JSONObject user = entities.getJSONObject(i);
+        return (String) user.get("username");
+    }
+
     @Override
     public Collection<User> getUsers(int i, int i1) {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
@@ -150,17 +153,17 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
     }
 
     @Override
-    public Set<String> getSearchFields() throws UnsupportedOperationException {
+    public Set<String> getSearchFields() {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Collection<User> findUsers(Set<String> set, String s) throws UnsupportedOperationException {
+    public Collection<User> findUsers(Set<String> set, String s) {
         throw new UnsupportedOperationException();
     }
 
     @Override
-    public Collection<User> findUsers(Set<String> set, String s, int i, int i1) throws UnsupportedOperationException {
+    public Collection<User> findUsers(Set<String> set, String s, int i, int i1) {
         throw new UnsupportedOperationException();
     }
 
