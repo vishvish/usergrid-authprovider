@@ -8,9 +8,9 @@ import org.jivesoftware.openfire.auth.AuthProvider;
 import org.jivesoftware.openfire.auth.ConnectionException;
 import org.jivesoftware.openfire.auth.InternalUnauthenticatedException;
 import org.jivesoftware.openfire.auth.UnauthorizedException;
-import org.jivesoftware.openfire.user.User;
-import org.jivesoftware.openfire.user.UserManager;
 import org.jivesoftware.openfire.user.UserNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -19,11 +19,13 @@ import java.net.URL;
  * Created by vish on 24/11/2015.
  */
 public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
+    private static final Logger LOG = LoggerFactory.getLogger(UsergridAuthProvider.class);
 
     public UsergridAuthProvider() {
         super("token");
     }
 
+    @Override
     public void authenticate(String username, String password) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
 
         try {
@@ -36,54 +38,54 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
                     .asJson();
 
             int status = jsonResponse.getStatus();
-            switch (status) {
-                case 200:
-                    System.out.print(url + " ");
-                    System.out.println("Authentication succeeded.");
-                    break;
-                default:
-                    System.out.print(url + " ");
-                    System.out.print("Authentication failed. ");
-                    System.out.println(jsonResponse.getBody().toString());
-                    throw new UnauthorizedException(jsonResponse.getBody().toString());
+            if (status == 200) {
+                LOG.debug(url + " ");
+                LOG.debug("Authentication succeeded.");
+            } else {
+                LOG.debug(url + " ");
+                LOG.debug("Authentication failed. ");
+                LOG.debug(jsonResponse.getBody().toString());
+                throw new UnauthorizedException(jsonResponse.getBody().toString());
             }
         } catch (UnirestException | MalformedURLException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         }
     }
 
+    @Override
     public void authenticate(String username, String token, String digest) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
         throw new UnsupportedOperationException("Usergrid provider does not support digests.");
     }
 
-    public String getPassword(String username) throws UserNotFoundException, UnsupportedOperationException {
+    @Override
+    public String getPassword(String username) throws UserNotFoundException {
         throw new UnsupportedOperationException();
     }
 
-    public void setPassword(String username, String password) throws UserNotFoundException, UnsupportedOperationException {
-        System.out.print("setPassword");
-        System.out.print(username + " / " + password);
-
+    @Override
+    public void setPassword(String username, String password) throws UserNotFoundException {
+        LOG.debug("setPassword");
+        LOG.debug(username + " / " + password);
         throw new UnsupportedOperationException();
-//        User u = UserManager.getInstance().getUser(username);
-//        u.setPassword(password);
     }
 
+    @Override
     public boolean supportsPasswordRetrieval() {
         return false;
     }
 
+    @Override
     public boolean isPlainSupported() {
         return true;
     }
 
+    @Override
     public boolean isDigestSupported() {
         return false;
     }
 
+    @Override
     public boolean isScramSupported() {
         return false;
     }
-
-
 }
