@@ -6,6 +6,7 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.jivesoftware.openfire.user.*;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
     public User loadUser(String username) throws UserNotFoundException {
         // TODO: sanitize username for nastiness
         try {
-            URL url = new URL("http", this.host, getEndpoint() + "/" + username);
+            URL url = new URL("http", this.host, this.port, getEndpoint() + "/" + username);
             HttpResponse<JsonNode> jsonResponse = Unirest.get(url.toString())
                     .header("accept", "application/json")
                     .queryString("client_id", this.config.getUsergridClientId())
@@ -63,7 +64,9 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                 LOG.debug(jsonResponse.getBody().toString());
                 throw new UserNotFoundException(jsonResponse.getBody().toString());
             }
-        } catch (UnirestException | MalformedURLException | UserAlreadyExistsException e) {
+        } catch (UnirestException | JSONException e) {
+            throw new UserNotFoundException();
+        } catch (MalformedURLException | UserAlreadyExistsException e) {
             LOG.error(e.getMessage(), e);
         }
         throw new UserNotFoundException();
@@ -94,7 +97,7 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
         ArrayList<String> usernames = new ArrayList<>();
 
         try {
-            URL url = new URL("http", this.host, getEndpoint());
+            URL url = new URL("http", this.host, this.port, getEndpoint());
             HttpResponse<JsonNode> jsonResponse = Unirest.get(url.toString())
                     .header("accept", "application/json")
                     .queryString("client_id", this.config.getUsergridClientId())
