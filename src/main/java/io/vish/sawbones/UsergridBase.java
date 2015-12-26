@@ -9,6 +9,7 @@ public class UsergridBase {
     protected final UsergridAuthProviderConfig config;
 
     protected final String host;
+    protected final int port;
     protected final String org;
     protected final String app;
     protected final String resource;
@@ -16,13 +17,14 @@ public class UsergridBase {
 
     public UsergridBase(String resource) {
         this.config = new UsergridAuthProviderConfig();
-        this.host = config.getUsergridBaseUrl();
+        this.host = config.getUsergridHost();
+        this.port = config.getUsergridPort();
         this.org = config.getUsergridOrganization();
         this.app = config.getUsergridApplication();
         this.resource = resource;
     }
 
     protected String getEndpoint() {
-        return Paths.get(org, app, resource).toString();
+        return Paths.get("/", org, app, resource).toString();
     }
 }

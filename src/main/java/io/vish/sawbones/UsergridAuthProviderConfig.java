@@ -10,7 +10,9 @@ import org.jivesoftware.util.JiveGlobals;
  */
 public class UsergridAuthProviderConfig {
 
-    private static final String USERGRID_BASE_URL = "usergrid.host";
+    private static final String USERGRID_HOST = "usergrid.host";
+
+    private static final String USERGRID_PORT = "usergrid.port";
 
     private static final String USERGRID_ORGANIZATION = "usergrid.organization";
 
@@ -20,9 +22,14 @@ public class UsergridAuthProviderConfig {
 
     private static final String USERGRID_CLIENT_SECRET = "usergrid.credentials.secret";
 
-    public String getUsergridBaseUrl() {
+    public String getUsergridHost() {
         // FIXME: needs a trailing slash configured
-        return JiveGlobals.getProperty(USERGRID_BASE_URL, "usergrid-1.tfto.net/");
+        return JiveGlobals.getProperty(USERGRID_HOST, "localhost");
+    }
+
+    public int getUsergridPort() {
+        String port = JiveGlobals.getProperty(USERGRID_PORT, "9090");
+        return Integer.parseInt(port);
     }
 
     public String getUsergridOrganization() {
@@ -34,10 +41,10 @@ public class UsergridAuthProviderConfig {
     }
 
     public String getUsergridClientId() {
-        return JiveGlobals.getProperty(USERGRID_CLIENT_ID, "b3U6NlBMqmD-EeWZ_Glhm0KmBg");
+        return JiveGlobals.getProperty(USERGRID_CLIENT_ID, "b3U69hrpMJ81EeWuvYVsCfW7Bg");
     }
 
     public String getUsergridClientSecret() {
-        return JiveGlobals.getProperty(USERGRID_CLIENT_SECRET, "b3U6w0O0U0Mzlvx5PK4yvOfzvLiyjC0");
+        return JiveGlobals.getProperty(USERGRID_CLIENT_SECRET, "b3U6l06iskVmRm-D4YUoMGvciRFoG50");
     }
 }

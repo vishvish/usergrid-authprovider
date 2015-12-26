@@ -15,7 +15,7 @@ public class UsergridAuthProviderTest {
     public void testAuthenticate() {
         UsergridAuthProvider uap = new UsergridAuthProvider();
         try {
-            uap.authenticate("vishvish", "vishvish");
+            uap.authenticate("admin", "admin");
         } catch (UnauthorizedException | ConnectionException | InternalUnauthenticatedException e) {
             e.printStackTrace();
         }
