@@ -65,6 +65,7 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                 throw new UserNotFoundException(jsonResponse.getBody().toString());
             }
         } catch (UnirestException | JSONException e) {
+            LOG.error(e.getMessage(), e);
             throw new UserNotFoundException();
         } catch (MalformedURLException | UserAlreadyExistsException e) {
             LOG.error(e.getMessage(), e);

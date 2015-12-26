@@ -24,11 +24,11 @@ public class UsergridAuthProviderConfig {
 
     public String getUsergridHost() {
         // FIXME: needs a trailing slash configured
-        return JiveGlobals.getProperty(USERGRID_HOST, "localhost");
+        return JiveGlobals.getProperty(USERGRID_HOST, "usergrid.local");
     }
 
     public int getUsergridPort() {
-        String port = JiveGlobals.getProperty(USERGRID_PORT, "9090");
+        String port = JiveGlobals.getProperty(USERGRID_PORT, "80");
         return Integer.parseInt(port);
     }
 
