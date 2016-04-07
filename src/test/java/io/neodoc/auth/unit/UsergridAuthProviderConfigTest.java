@@ -1,5 +1,6 @@
-package io.neodoc.auth;
+package io.neodoc.auth.unit;
 
+import io.neodoc.auth.UsergridAuthProviderConfig;
 import org.jivesoftware.openfire.auth.ConnectionException;
 import org.jivesoftware.openfire.auth.InternalUnauthenticatedException;
 import org.jivesoftware.openfire.auth.UnauthorizedException;

@@ -1,4 +1,4 @@
-package io.neodoc.auth;
+package io.neodoc.auth.integration;
 
 import io.neodoc.auth.UsergridUserProvider;
 import org.jivesoftware.openfire.user.User;
