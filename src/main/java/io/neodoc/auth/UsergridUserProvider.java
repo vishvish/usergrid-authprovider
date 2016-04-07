@@ -1,4 +1,4 @@
-package io.vish.sawbones;
+package io.neodoc.auth;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;

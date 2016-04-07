@@ -1,4 +1,4 @@
-package io.vish.sawbones;
+package io.neodoc.auth;
 
 import org.jivesoftware.util.JiveGlobals;
 

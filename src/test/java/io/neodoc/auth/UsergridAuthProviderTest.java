@@ -1,5 +1,6 @@
-package io.vish.sawbones;
+package io.neodoc.auth;
 
+import io.neodoc.auth.UsergridAuthProvider;
 import org.jivesoftware.openfire.auth.ConnectionException;
 import org.jivesoftware.openfire.auth.InternalUnauthenticatedException;
 import org.jivesoftware.openfire.auth.UnauthorizedException;

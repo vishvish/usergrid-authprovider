@@ -1,5 +1,6 @@
-package io.vish.sawbones;
+package io.neodoc.auth;
 
+import io.neodoc.auth.UsergridUserProvider;
 import org.jivesoftware.openfire.user.User;
 import org.jivesoftware.openfire.user.UserNotFoundException;
 import org.junit.Assert;

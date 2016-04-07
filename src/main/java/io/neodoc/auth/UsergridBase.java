@@ -1,4 +1,4 @@
-package io.vish.sawbones;
+package io.neodoc.auth;
 
 import java.nio.file.Paths;
 

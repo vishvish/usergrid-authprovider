@@ -1,4 +1,4 @@
-package io.vish.sawbones;
+package io.neodoc.auth;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
