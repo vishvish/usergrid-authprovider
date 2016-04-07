@@ -1,5 +1,7 @@
 package io.neodoc.auth;
 
+import com.typesafe.config.Config;
+import com.typesafe.config.ConfigFactory;
 import org.jivesoftware.util.JiveGlobals;
 
 /**
@@ -9,6 +11,8 @@ import org.jivesoftware.util.JiveGlobals;
  * <code>UsergridAuthProviderConfig</code> instances.
  */
 public class UsergridAuthProviderConfig {
+
+    private Config config;
 
     private static final String USERGRID_HOST = "usergrid.host";
 
@@ -22,29 +26,37 @@ public class UsergridAuthProviderConfig {
 
     private static final String USERGRID_CLIENT_SECRET = "usergrid.credentials.secret";
 
-    public String getUsergridHost() {
-        // FIXME: needs a trailing slash configured
-        return JiveGlobals.getProperty(USERGRID_HOST, "usergrid.local");
+    public UsergridAuthProviderConfig(Config config) {
+        this.config = config;
+        config.checkValid(ConfigFactory.defaultReference(), "usergrid");
     }
 
-    public int getUsergridPort() {
-        String port = JiveGlobals.getProperty(USERGRID_PORT, "80");
-        return Integer.parseInt(port);
+    public UsergridAuthProviderConfig() {
+        this(ConfigFactory.load());
+    }
+
+    public String getUsergridHost() {
+        // FIXME: needs a trailing slash configured
+        return JiveGlobals.getProperty(USERGRID_HOST, config.getString(USERGRID_HOST));
+    }
+
+    public String getUsergridPort() {
+        return JiveGlobals.getProperty(USERGRID_PORT, config.getString(USERGRID_PORT));
     }
 
     public String getUsergridOrganization() {
-        return JiveGlobals.getProperty(USERGRID_ORGANIZATION, "test-organization");
+        return JiveGlobals.getProperty(USERGRID_ORGANIZATION, this.config.getString(USERGRID_ORGANIZATION));
     }
 
     public String getUsergridApplication() {
-        return JiveGlobals.getProperty(USERGRID_APPLICATION, "test-app");
+        return JiveGlobals.getProperty(USERGRID_APPLICATION, this.config.getString(USERGRID_APPLICATION));
     }
 
     public String getUsergridClientId() {
-        return JiveGlobals.getProperty(USERGRID_CLIENT_ID, "b3U69hrpMJ81EeWuvYVsCfW7Bg");
+        return JiveGlobals.getProperty(USERGRID_CLIENT_ID, this.config.getString(USERGRID_CLIENT_ID));
     }
 
     public String getUsergridClientSecret() {
-        return JiveGlobals.getProperty(USERGRID_CLIENT_SECRET, "b3U6l06iskVmRm-D4YUoMGvciRFoG50");
+        return JiveGlobals.getProperty(USERGRID_CLIENT_SECRET, this.config.getString(USERGRID_CLIENT_SECRET));
     }
 }
