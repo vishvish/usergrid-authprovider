@@ -24,6 +24,8 @@ import java.util.Set;
 public class UsergridUserProvider extends UsergridBase implements UserProvider {
     private static final Logger LOG = LoggerFactory.getLogger(UsergridUserProvider.class);
 
+    private User currentUser;
+
     public UsergridUserProvider() {
         super("users");
     }
@@ -41,8 +43,8 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
             int status = jsonResponse.getStatus();
             if (status == 200) {
-                LOG.debug(url + " ");
-                LOG.debug(jsonResponse.getBody().toString());
+                LOG.info(url + " ");
+                LOG.info(jsonResponse.getBody().toString());
                 // make new JSON Object from the response
                 JSONArray entities = (JSONArray) jsonResponse.getBody().getObject().get("entities");
                 JSONObject user = (JSONObject) entities.get(0);
@@ -58,16 +60,23 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                 LOG.info(cdate.toString());
                 LOG.info(mdate.toString());
 
-                return UserManager.getInstance().createUser(username, username, name, email);
+                try {
+                    this.currentUser = UserManager.getInstance().createUser(username, username, name, email);
+                } catch (Exception e) {
+                    this.currentUser = UserManager.getInstance().getUser(username);
+                }
+
+                return this.currentUser;
+
             } else {
-                LOG.debug(url + " ");
-                LOG.debug(jsonResponse.getBody().toString());
+                LOG.info(url + " ");
+                LOG.info(jsonResponse.getBody().toString());
                 throw new UserNotFoundException(jsonResponse.getBody().toString());
             }
         } catch (UnirestException | JSONException e) {
             LOG.error(e.getMessage(), e);
             throw new UserNotFoundException();
-        } catch (MalformedURLException | UserAlreadyExistsException e) {
+        } catch (MalformedURLException e) {
             LOG.error(e.getMessage(), e);
         }
         throw new UserNotFoundException();
@@ -106,8 +115,8 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                     .asJson();
 
             int status = jsonResponse.getStatus();
-            LOG.debug(url + " ");
-            LOG.debug(jsonResponse.getBody().toString());
+            LOG.info(url + " ");
+            LOG.info(jsonResponse.getBody().toString());
             switch (status) {
                 case 401: // resource not found
                     break;

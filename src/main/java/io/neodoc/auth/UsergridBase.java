@@ -18,7 +18,7 @@ public class UsergridBase {
     public UsergridBase(String resource) {
         this.config = new UsergridAuthProviderConfig();
         this.host = config.getUsergridHost();
-        this.port = config.getUsergridPort();
+        this.port = Integer.parseInt(config.getUsergridPort());
         this.org = config.getUsergridOrganization();
         this.app = config.getUsergridApplication();
         this.resource = resource;

@@ -1,6 +1,7 @@
 package io.neodoc.auth.integration;
 
 import io.neodoc.auth.UsergridAuthProvider;
+import junit.framework.Assert;
 import org.jivesoftware.openfire.auth.ConnectionException;
 import org.jivesoftware.openfire.auth.InternalUnauthenticatedException;
 import org.jivesoftware.openfire.auth.UnauthorizedException;
@@ -16,7 +17,7 @@ public class UsergridAuthProviderTest {
     public void testAuthenticate() {
         UsergridAuthProvider uap = new UsergridAuthProvider();
         try {
-            uap.authenticate("admin", "admin");
+            uap.authenticate("tester", "tester");
         } catch (UnauthorizedException | ConnectionException | InternalUnauthenticatedException e) {
             e.printStackTrace();
         }

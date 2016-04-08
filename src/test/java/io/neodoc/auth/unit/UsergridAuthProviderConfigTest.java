@@ -23,7 +23,7 @@ public class UsergridAuthProviderConfigTest {
 
     @Test
     public void testHost() {
-        Assert.assertEquals("Host should be http://usergrid.local", "http://usergrid.local", config.getUsergridHost());
+        Assert.assertEquals("Host should be 10.1.1.161", "10.1.1.161", config.getUsergridHost());
     }
 
     @Test
@@ -43,11 +43,11 @@ public class UsergridAuthProviderConfigTest {
 
     @Test
     public void testClientId() {
-        Assert.assertEquals("Client ID should be ABCDEFGHIJKLM", "ABCDEFGHIJKLM", config.getUsergridClientId());
+        Assert.assertEquals("Client ID should be b3U6icZL6fIUEeWJBwgAJwUSfA", "b3U6icZL6fIUEeWJBwgAJwUSfA", config.getUsergridClientId());
     }
 
     @Test
     public void testOrganizations() {
-        Assert.assertEquals("Client secret should be NOPQRSTUVWXYZ", "NOPQRSTUVWXYZ", config.getUsergridClientSecret());
+        Assert.assertEquals("Client secret should be b3U6I3I3fkB2MgAg26bwkIfIGsaETEc", "b3U6I3I3fkB2MgAg26bwkIfIGsaETEc", config.getUsergridClientSecret());
     }
 }
