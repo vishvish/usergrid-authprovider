@@ -1,6 +1,6 @@
-package io.neodoc.auth.integration;
+package com.koothooloo.openfire.auth.integration;
 
-import io.neodoc.auth.UsergridUserProvider;
+import com.koothooloo.openfire.auth.UsergridUserProvider;
 import org.jivesoftware.openfire.user.User;
 import org.jivesoftware.openfire.user.UserNotFoundException;
 import org.junit.Assert;

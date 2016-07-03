@@ -1,4 +1,4 @@
-package io.neodoc.auth;
+package com.koothooloo.openfire.auth;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;

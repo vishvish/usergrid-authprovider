@@ -1,4 +1,4 @@
-package io.neodoc.auth;
+package com.koothooloo.openfire.auth;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;

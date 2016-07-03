@@ -1,4 +1,4 @@
-package io.neodoc.auth;
+package com.koothooloo.openfire.auth;
 
 import java.nio.file.Paths;
 

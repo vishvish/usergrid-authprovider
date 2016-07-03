@@ -1,14 +1,9 @@
-package io.neodoc.auth.unit;
+package com.koothooloo.openfire.auth.unit;
 
-import io.neodoc.auth.UsergridAuthProviderConfig;
-import org.jivesoftware.openfire.auth.ConnectionException;
-import org.jivesoftware.openfire.auth.InternalUnauthenticatedException;
-import org.jivesoftware.openfire.auth.UnauthorizedException;
+import com.koothooloo.openfire.auth.UsergridAuthProviderConfig;
 import org.junit.Assert;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 /**
  * Created by vish on 07/04/2016.
