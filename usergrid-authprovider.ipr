@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactManager">
+    <artifact type="jar" name="usergrid-authprovider:jar">
+      <output-path>$PROJECT_DIR$/out/artifacts/usergrid_authprovider_jar</output-path>
+      <root id="archive" name="usergrid-authprovider.jar">
+        <element id="module-output" name="usergrid-authprovider" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.13/slf4j-api-1.7.13.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$PROJECT_DIR$/lib/openfire.jar" path-in-jar="/" />
+        <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-nop/1.7.13/slf4j-nop-1.7.13.jar" path-in-jar="/" />
+      </root>
+    </artifact>
+  </component>
   <component name="CompilerConfiguration">
     <resourceExtensions />
     <wildcardResourcePatterns>
@@ -17,7 +28,7 @@
       <profile default="true" name="Default" enabled="false">
         <processorPath useClasspath="true" />
       </profile>
-      <profile default="false" name="Annotation profile for usergrid-authprovider" enabled="true">
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
