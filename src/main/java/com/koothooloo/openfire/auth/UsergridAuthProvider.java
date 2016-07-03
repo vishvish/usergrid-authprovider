@@ -1,4 +1,4 @@
-package io.neodoc.auth;
+package com.koothooloo.openfire.auth;
 
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
@@ -29,7 +29,7 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
     public void authenticate(String username, String password) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
 
         try {
-            URL url = new URL("http", this.host, getEndpoint());
+            URL url = new URL("http", this.host, this.port, getEndpoint());
             HttpResponse<JsonNode> jsonResponse = Unirest.get(url.toString())
                     .header("accept", "application/json")
                     .queryString("grant_type", "password")

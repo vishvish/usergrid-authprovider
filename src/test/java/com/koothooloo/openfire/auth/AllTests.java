@@ -1,8 +1,8 @@
-package io.neodoc.auth;
+package com.koothooloo.openfire.auth;
 
-import io.neodoc.auth.integration.UsergridAuthProviderTest;
-import io.neodoc.auth.integration.UsergridUserProviderTest;
-import io.neodoc.auth.unit.UsergridAuthProviderConfigTest;
+import com.koothooloo.openfire.auth.integration.UsergridAuthProviderTest;
+import com.koothooloo.openfire.auth.integration.UsergridUserProviderTest;
+import com.koothooloo.openfire.auth.unit.UsergridAuthProviderConfigTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
