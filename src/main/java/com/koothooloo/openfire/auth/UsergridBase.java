@@ -5,17 +5,17 @@ import java.nio.file.Paths;
 /**
  * Created by vish on 25/11/2015.
  */
-public class UsergridBase {
-    protected final UsergridAuthProviderConfig config;
+class UsergridBase {
+    final UsergridAuthProviderConfig config;
 
-    protected final String host;
-    protected final int port;
+    final String host;
+    final int port;
     protected final String org;
-    protected final String app;
-    protected final String resource;
+    private final String app;
+    private final String resource;
 
 
-    public UsergridBase(String resource) {
+    UsergridBase(String resource) {
         this.config = new UsergridAuthProviderConfig();
         this.host = config.getUsergridHost();
         this.port = Integer.parseInt(config.getUsergridPort());
@@ -24,7 +24,7 @@ public class UsergridBase {
         this.resource = resource;
     }
 
-    protected String getEndpoint() {
+    String getEndpoint() {
         return Paths.get("/", org, app, resource).toString();
     }
 }

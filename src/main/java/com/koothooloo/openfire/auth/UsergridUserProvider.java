@@ -24,8 +24,6 @@ import java.util.Set;
 public class UsergridUserProvider extends UsergridBase implements UserProvider {
     private static final Logger LOG = LoggerFactory.getLogger(UsergridUserProvider.class);
 
-    private User currentUser;
-
     public UsergridUserProvider() {
         super("users");
     }
@@ -60,13 +58,14 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
                 LOG.info(cdate.toString());
                 LOG.info(mdate.toString());
 
+                User currentUser;
                 try {
-                    this.currentUser = UserManager.getInstance().createUser(username, username, name, email);
+                    currentUser = UserManager.getInstance().createUser(username, username, name, email);
                 } catch (Exception e) {
-                    this.currentUser = UserManager.getInstance().getUser(username);
+                    currentUser = UserManager.getInstance().getUser(username);
                 }
 
-                return this.currentUser;
+                return currentUser;
 
             } else {
                 LOG.info(url + " ");

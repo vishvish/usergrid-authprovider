@@ -26,7 +26,7 @@ public class UsergridAuthProviderConfig {
 
     private static final String USERGRID_CLIENT_SECRET = "usergrid.credentials.secret";
 
-    public UsergridAuthProviderConfig(Config config) {
+    private UsergridAuthProviderConfig(Config config) {
         this.config = config;
         config.checkValid(ConfigFactory.defaultReference(), "usergrid");
     }

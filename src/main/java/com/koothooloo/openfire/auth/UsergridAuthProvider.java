@@ -52,7 +52,6 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
         }
     }
 
-    @Override
     public void authenticate(String username, String token, String digest) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
         throw new UnsupportedOperationException("Usergrid provider does not support digests.");
     }
@@ -74,12 +73,10 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
         return false;
     }
 
-    @Override
     public boolean isPlainSupported() {
         return true;
     }
 
-    @Override
     public boolean isDigestSupported() {
         return false;
     }
