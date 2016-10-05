@@ -1,5 +1,10 @@
 package com.koothooloo.openfire.auth;
 
+import org.apache.usergrid.java.client.Usergrid;
+import org.apache.usergrid.java.client.UsergridClient;
+import org.apache.usergrid.java.client.UsergridEnums;
+import org.apache.usergrid.java.client.auth.UsergridAppAuth;
+
 import java.nio.file.Paths;
 
 /**
@@ -14,6 +19,7 @@ class UsergridBase {
     private final String app;
     private final String resource;
 
+    private static UsergridClient client;
 
     UsergridBase(String resource) {
         this.config = new UsergridAuthProviderConfig();
@@ -22,6 +28,15 @@ class UsergridBase {
         this.org = config.getUsergridOrganization();
         this.app = config.getUsergridApplication();
         this.resource = resource;
+
+        if (client == null) {
+            String id = config.getUsergridClientId();
+            String secret = config.getUsergridClientSecret();
+            client = Usergrid.initSharedInstance(org, app, host, UsergridEnums.UsergridAuthMode.APP);
+            client.setAppAuth(new UsergridAppAuth(id, secret));
+            UsergridAppAuth auth = new UsergridAppAuth();
+            client.authenticateApp();
+        }
     }
 
     String getEndpoint() {

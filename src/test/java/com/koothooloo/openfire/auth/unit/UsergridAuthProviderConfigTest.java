@@ -28,21 +28,21 @@ public class UsergridAuthProviderConfigTest {
 
     @Test
     public void testOrganization() {
-        Assert.assertEquals("Organization should be test-organization", "test-organization", config.getUsergridOrganization());
+        Assert.assertEquals("Organization should be test-organization", "0c475022-4fd4-11e6-a16d-080027163942", config.getUsergridOrganization());
     }
 
     @Test
     public void testApplication() {
-        Assert.assertEquals("Applications should be test-app", "test-app", config.getUsergridApplication());
+        Assert.assertEquals("Applications should be test-app", "0caf39f5-4fd4-11e6-a16d-080027163942", config.getUsergridApplication());
     }
 
     @Test
     public void testClientId() {
-        Assert.assertEquals("Client ID should be b3U6icZL6fIUEeWJBwgAJwUSfA", "b3U6icZL6fIUEeWJBwgAJwUSfA", config.getUsergridClientId());
+        Assert.assertEquals("Client ID should be b3U6icZL6fIUEeWJBwgAJwUSfA", "b3U6DEdQIk_UEeahbQgAJxY5Qg", config.getUsergridClientId());
     }
 
     @Test
     public void testOrganizations() {
-        Assert.assertEquals("Client secret should be b3U6I3I3fkB2MgAg26bwkIfIGsaETEc", "b3U6I3I3fkB2MgAg26bwkIfIGsaETEc", config.getUsergridClientSecret());
+        Assert.assertEquals("Client secret should be b3U6I3I3fkB2MgAg26bwkIfIGsaETEc", "b3U6fZOpcVnBJNyUGs6HeBupdDrYDnM", config.getUsergridClientSecret());
     }
 }
