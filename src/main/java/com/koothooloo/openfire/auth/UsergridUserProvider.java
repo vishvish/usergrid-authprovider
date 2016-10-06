@@ -31,7 +31,7 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
         if (!(response.first() instanceof UsergridUser)) throw new UserNotFoundException();
 
         UsergridUser user = (UsergridUser) response.first();
-        User openfireUser = new User(user.getUsername(), user.getName(), user.getEmail(), new Date(user.getCreated() * 1000), new Date(user.getModified() * 1000));
+        User openfireUser = new User(user.getUsername(), user.getName(), user.getEmail(), new Date(user.getCreated() * 100), new Date(user.getModified() * 100));
         String openfireUserPassword = UUID.randomUUID().toString();
 
         try {

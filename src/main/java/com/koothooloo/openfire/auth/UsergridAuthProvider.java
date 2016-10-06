@@ -2,6 +2,8 @@ package com.koothooloo.openfire.auth;
 
 import org.apache.usergrid.java.client.Usergrid;
 import org.apache.usergrid.java.client.auth.UsergridUserAuth;
+import org.apache.usergrid.java.client.model.UsergridUser;
+import org.apache.usergrid.java.client.query.UsergridQuery;
 import org.apache.usergrid.java.client.response.UsergridResponse;
 import org.jivesoftware.openfire.auth.AuthProvider;
 import org.jivesoftware.openfire.auth.ConnectionException;
@@ -39,9 +41,19 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
 
     @Override
     public void setPassword(String username, String password) throws UserNotFoundException {
-        LOG.debug("setPassword");
-        LOG.debug(username + " / " + password);
-        throw new UnsupportedOperationException();
+//        LOG.debug("setPassword");
+//        LOG.debug(username + " / " + password);
+//        throw new UnsupportedOperationException();
+        UsergridQuery query = new UsergridQuery("users").eq("username", username);
+        UsergridResponse response = Usergrid.GET(query);
+
+        if (response.getEntities().size() != 1) throw new UserNotFoundException();
+        if (!(response.first() instanceof UsergridUser)) throw new UserNotFoundException();
+
+        UsergridUser user = (UsergridUser) response.first();
+
+        user.setPassword(password);
+
     }
 
     @Override
