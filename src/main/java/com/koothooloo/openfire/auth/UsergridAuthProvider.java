@@ -36,14 +36,18 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
 
     @Override
     public String getPassword(String username) throws UserNotFoundException {
-        throw new UnsupportedOperationException();
+        UsergridQuery query = new UsergridQuery("users").eq("username", username);
+        UsergridResponse response = Usergrid.GET(query);
+
+        if (response.getEntities().size() != 1) throw new UserNotFoundException();
+        if (!(response.first() instanceof UsergridUser)) throw new UserNotFoundException();
+
+        UsergridUser user = (UsergridUser) response.first();
+        return user.getPassword();
     }
 
     @Override
     public void setPassword(String username, String password) throws UserNotFoundException {
-//        LOG.debug("setPassword");
-//        LOG.debug(username + " / " + password);
-//        throw new UnsupportedOperationException();
         UsergridQuery query = new UsergridQuery("users").eq("username", username);
         UsergridResponse response = Usergrid.GET(query);
 
@@ -53,12 +57,11 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
         UsergridUser user = (UsergridUser) response.first();
 
         user.setPassword(password);
-
     }
 
     @Override
     public boolean supportsPasswordRetrieval() {
-        return false;
+        return true;
     }
 
     public boolean isPlainSupported() {

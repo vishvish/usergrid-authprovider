@@ -36,7 +36,6 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
         try {
             openfireUser = UserManager.getInstance().createUser(user.getUsername(), openfireUserPassword, user.getName(), user.getEmail());
-
         } catch (UserAlreadyExistsException e) {
             LOG.error(e.getMessage(), e);
             openfireUser = UserManager.getInstance().getUser(username);
@@ -52,7 +51,15 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
     @Override
     public User createUser(String username, String password, String name, String email) throws UserAlreadyExistsException {
-        throw new UnsupportedOperationException();
+        boolean available = UsergridUser.checkAvailable(email, username); // 'available' == whether an username already exists for a user
+        if(!available) throw new UserAlreadyExistsException();
+
+        UsergridUser user = new UsergridUser(username, password);
+        user.create(); // user has now been created and should have a valid uuid
+//        User openfireUser = UserManager.getInstance().createUser(username, password, name, email);
+        User openfireUser = new User(user.getUsername(), user.getName(), user.getEmail(), new Date(user.getCreated() * 100), new Date(user.getModified() * 100));
+
+        return openfireUser;
     }
 
     @Override
