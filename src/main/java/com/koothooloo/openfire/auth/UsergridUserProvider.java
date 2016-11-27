@@ -1,22 +1,15 @@
 package com.koothooloo.openfire.auth;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import org.apache.usergrid.java.client.Usergrid;
+import org.apache.usergrid.java.client.model.UsergridEntity;
+import org.apache.usergrid.java.client.model.UsergridUser;
+import org.apache.usergrid.java.client.query.UsergridQuery;
+import org.apache.usergrid.java.client.response.UsergridResponse;
 import org.jivesoftware.openfire.user.*;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by vish on 25/11/2015.
@@ -30,60 +23,55 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
     @Override
     public User loadUser(String username) throws UserNotFoundException {
+        LOG.debug("loadUser: ", username);
+
         // TODO: sanitize username for nastiness
-        try {
-            URL url = new URL("http", this.host, this.port, getEndpoint() + "/" + username);
-            HttpResponse<JsonNode> jsonResponse = Unirest.get(url.toString())
-                    .header("accept", "application/json")
-                    .queryString("client_id", this.config.getUsergridClientId())
-                    .queryString("client_secret", this.config.getUsergridClientSecret())
-                    .asJson();
+//        UsergridQuery query = new UsergridQuery("users").eq("username", username);
+//        UsergridResponse response = Usergrid.GET(query);
 
-            int status = jsonResponse.getStatus();
-            if (status == 200) {
-                LOG.info(url + " ");
-                LOG.info(jsonResponse.getBody().toString());
-                // make new JSON Object from the response
-                JSONArray entities = (JSONArray) jsonResponse.getBody().getObject().get("entities");
-                JSONObject user = (JSONObject) entities.get(0);
+        boolean available = UsergridUser.checkAvailable(null, username);
+        if (available) throw new UserNotFoundException();
 
-                String name = (String) user.get("uuid");
-                String email = (String) user.get("email");
-                Long created = (Long) user.get("created");
-                Long modified = (Long) user.get("modified");
+        UsergridResponse response = Usergrid.GET("users",username);
+        if(response.ok()) {
+            UsergridUser user = response.user();
+            User openfireUser = new User(user.getUsername(), user.getName(), user.getEmail(), new Date(user.getCreated() * 100), new Date(user.getModified() * 100));
+            String openfireUserPassword = UUID.randomUUID().toString();
 
-                Date cdate = new Date(created);
-                Date mdate = new Date(modified);
-
-                LOG.info(cdate.toString());
-                LOG.info(mdate.toString());
-
-                User currentUser;
-                try {
-                    currentUser = UserManager.getInstance().createUser(username, username, name, email);
-                } catch (Exception e) {
-                    currentUser = UserManager.getInstance().getUser(username);
-                }
-
-                return currentUser;
-
-            } else {
-                LOG.info(url + " ");
-                LOG.info(jsonResponse.getBody().toString());
-                throw new UserNotFoundException(jsonResponse.getBody().toString());
+            try {
+                openfireUser = UserManager.getInstance().createUser(user.getUsername(), openfireUserPassword, user.getName(), user.getEmail());
+            } catch (UserAlreadyExistsException e) {
+                LOG.error(e.getMessage(), e);
+                openfireUser = UserManager.getInstance().getUser(username);
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+                LOG.info(e.getMessage(), e);
+                openfireUser.setEmail(user.getEmail());
+                openfireUser.setName(user.getName());
+            } finally {
+                return openfireUser;
             }
-        } catch (UnirestException | JSONException e) {
-            LOG.error(e.getMessage(), e);
+        } else {
+            LOG.error(response.getResponseError().toString());
             throw new UserNotFoundException();
-        } catch (MalformedURLException e) {
-            LOG.error(e.getMessage(), e);
         }
-        throw new UserNotFoundException();
     }
 
     @Override
     public User createUser(String username, String password, String name, String email) throws UserAlreadyExistsException {
-        throw new UnsupportedOperationException();
+        LOG.debug("createUser: ", username);
+
+        boolean available = UsergridUser.checkAvailable(email, username); // 'available' == whether an username already exists for a user
+        if(!available) throw new UserAlreadyExistsException();
+
+        UsergridUser user = new UsergridUser(username, password);
+        user.create(); // user has now been created and should have a valid uuid
+        LOG.debug("createUser: userCreated", user.getUuid());
+
+//        User openfireUser = UserManager.getInstance().createUser(username, password, name, email);
+        User openfireUser = new User(user.getUsername(), user.getName(), user.getEmail(), new Date(user.getCreated() * 100), new Date(user.getModified() * 100));
+
+        return openfireUser;
     }
 
     @Override
@@ -103,40 +91,16 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
     @Override
     public Collection<String> getUsernames() {
+        LOG.debug("getUsernames");
+
+        UsergridResponse response = Usergrid.GET(new UsergridQuery("users"));
         ArrayList<String> usernames = new ArrayList<>();
+        List<UsergridEntity> entities = response.getEntities();
 
-        try {
-            URL url = new URL("http", this.host, this.port, getEndpoint());
-            HttpResponse<JsonNode> jsonResponse = Unirest.get(url.toString())
-                    .header("accept", "application/json")
-                    .queryString("client_id", this.config.getUsergridClientId())
-                    .queryString("client_secret", this.config.getUsergridClientSecret())
-                    .asJson();
-
-            int status = jsonResponse.getStatus();
-            LOG.info(url + " ");
-            LOG.info(jsonResponse.getBody().toString());
-            switch (status) {
-                case 401: // resource not found
-                    break;
-                case 200:
-                    JSONArray entities = (JSONArray) jsonResponse.getBody().getObject().get("entities");
-                    for (int i = 0; i < entities.length(); i++) {
-                        usernames.add(getUsername(entities, i));
-                    }
-                    break;
-                default:
-                    break;
-            }
-        } catch (UnirestException | MalformedURLException e) {
-            LOG.error(e.getMessage(), e);
+        for (int i = 0; i < entities.size(); i++) {
+            usernames.add(entities.get(i).getName());
         }
         return usernames;
-    }
-
-    private String getUsername(JSONArray entities, int i) {
-        JSONObject user = entities.getJSONObject(i);
-        return (String) user.get("username");
     }
 
     @Override
