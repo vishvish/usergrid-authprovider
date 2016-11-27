@@ -23,39 +23,51 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
     @Override
     public User loadUser(String username) throws UserNotFoundException {
+        LOG.debug("loadUser: ", username);
+
         // TODO: sanitize username for nastiness
-        UsergridQuery query = new UsergridQuery("users").eq("username", username);
-        UsergridResponse response = Usergrid.GET(query);
+//        UsergridQuery query = new UsergridQuery("users").eq("username", username);
+//        UsergridResponse response = Usergrid.GET(query);
 
-        if (response.getEntities().size() != 1) throw new UserNotFoundException();
-        if (!(response.first() instanceof UsergridUser)) throw new UserNotFoundException();
+        boolean available = UsergridUser.checkAvailable(null, username);
+        if (available) throw new UserNotFoundException();
 
-        UsergridUser user = (UsergridUser) response.first();
-        User openfireUser = new User(user.getUsername(), user.getName(), user.getEmail(), new Date(user.getCreated() * 100), new Date(user.getModified() * 100));
-        String openfireUserPassword = UUID.randomUUID().toString();
+        UsergridResponse response = Usergrid.GET("users",username);
+        if(response.ok()) {
+            UsergridUser user = response.user();
+            User openfireUser = new User(user.getUsername(), user.getName(), user.getEmail(), new Date(user.getCreated() * 100), new Date(user.getModified() * 100));
+            String openfireUserPassword = UUID.randomUUID().toString();
 
-        try {
-            openfireUser = UserManager.getInstance().createUser(user.getUsername(), openfireUserPassword, user.getName(), user.getEmail());
-        } catch (UserAlreadyExistsException e) {
-            LOG.error(e.getMessage(), e);
-            openfireUser = UserManager.getInstance().getUser(username);
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-            LOG.info(e.getMessage(), e);
-            openfireUser.setEmail(user.getEmail());
-            openfireUser.setName(user.getName());
-        } finally {
-            return openfireUser;
+            try {
+                openfireUser = UserManager.getInstance().createUser(user.getUsername(), openfireUserPassword, user.getName(), user.getEmail());
+            } catch (UserAlreadyExistsException e) {
+                LOG.error(e.getMessage(), e);
+                openfireUser = UserManager.getInstance().getUser(username);
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+                LOG.info(e.getMessage(), e);
+                openfireUser.setEmail(user.getEmail());
+                openfireUser.setName(user.getName());
+            } finally {
+                return openfireUser;
+            }
+        } else {
+            LOG.error(response.getResponseError().toString());
+            throw new UserNotFoundException();
         }
     }
 
     @Override
     public User createUser(String username, String password, String name, String email) throws UserAlreadyExistsException {
+        LOG.debug("createUser: ", username);
+
         boolean available = UsergridUser.checkAvailable(email, username); // 'available' == whether an username already exists for a user
         if(!available) throw new UserAlreadyExistsException();
 
         UsergridUser user = new UsergridUser(username, password);
         user.create(); // user has now been created and should have a valid uuid
+        LOG.debug("createUser: userCreated", user.getUuid());
+
 //        User openfireUser = UserManager.getInstance().createUser(username, password, name, email);
         User openfireUser = new User(user.getUsername(), user.getName(), user.getEmail(), new Date(user.getCreated() * 100), new Date(user.getModified() * 100));
 
@@ -79,6 +91,8 @@ public class UsergridUserProvider extends UsergridBase implements UserProvider {
 
     @Override
     public Collection<String> getUsernames() {
+        LOG.debug("getUsernames");
+
         UsergridResponse response = Usergrid.GET(new UsergridQuery("users"));
         ArrayList<String> usernames = new ArrayList<>();
         List<UsergridEntity> entities = response.getEntities();

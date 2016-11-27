@@ -20,8 +20,9 @@ public class UsergridUserProviderTest {
     @Test
     public void testLoadRealUser() throws UserNotFoundException {
         UsergridUserProvider uup = new UsergridUserProvider();
-        User user = uup.loadUser("tester");
-        Assert.assertEquals("Email should be tester@example.com", "tester@example.com", user.getEmail());
+
+        User user = uup.loadUser("vish");
+        Assert.assertEquals("Email should be john.doe@gmail.com", "john.doe@gmail.com", user.getEmail());
     }
 
     @Test

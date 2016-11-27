@@ -25,17 +25,23 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
 
     @Override
     public void authenticate(String username, String password) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
+        LOG.debug("authenticate: ", username);
+
         UsergridUserAuth userAuth = new UsergridUserAuth(username, password);
         UsergridResponse response = Usergrid.authenticateUser(userAuth);
         if (!response.ok()) throw new UnauthorizedException();
     }
 
     public void authenticate(String username, String token, String digest) throws UnauthorizedException, ConnectionException, InternalUnauthenticatedException {
+        LOG.debug("authenticate: UnsupportedOperationException");
+
         throw new UnsupportedOperationException("Usergrid provider does not support digests.");
     }
 
     @Override
     public String getPassword(String username) throws UserNotFoundException {
+        LOG.debug("getPassword: ", username);
+
         UsergridQuery query = new UsergridQuery("users").eq("username", username);
         UsergridResponse response = Usergrid.GET(query);
 
@@ -48,6 +54,8 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
 
     @Override
     public void setPassword(String username, String password) throws UserNotFoundException {
+        LOG.debug("setPassword: ", username);
+
         UsergridQuery query = new UsergridQuery("users").eq("username", username);
         UsergridResponse response = Usergrid.GET(query);
 
@@ -65,10 +73,14 @@ public class UsergridAuthProvider extends UsergridBase implements AuthProvider {
     }
 
     public boolean isPlainSupported() {
+        LOG.debug("isPlainSupported: ", true);
+
         return true;
     }
 
     public boolean isDigestSupported() {
+        LOG.debug("isDigestSupported: ", false);
+
         return false;
     }
 

@@ -29,7 +29,7 @@ public class UsergridAuthProviderTest {
 
     @Test
     public void testAuthenticate() throws ConnectionException, InternalUnauthenticatedException, UnauthorizedException {
-        uap.authenticate("tester", "password");
+        uap.authenticate("vish", "vishvish");
     }
 
     @Rule
@@ -39,6 +39,6 @@ public class UsergridAuthProviderTest {
     public void testAuthenticateFailure() throws ConnectionException, InternalUnauthenticatedException, UnauthorizedException {
         UsergridAuthProvider uap = new UsergridAuthProvider();
         thrown.expect(UnauthorizedException.class);
-        uap.authenticate("vishvish", "rubbish");
+        uap.authenticate("tester", "password");
     }
 }
